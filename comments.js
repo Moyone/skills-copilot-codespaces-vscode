@@ -1,66 +1,55 @@
 // Create a web server
-// 1. GET /comments - returns all comments
-// 2. GET /comments/:id - returns comments by id
-// 3. POST /comments - create a new comment
-// 4. PUT /comments/:id - update a comment by id
-// 5. DELETE /comments/:id - delete a comment by id
+// 1. Handle root url
+// 2. Handle /comments url
+// 3. Handle /comments/new url
+// 4. Handle /comments/:id url
+// 5. Handle /comments/:id/edit url
+// 6. Handle /comments/:id/delete url
+// 7. Handle /comments/:id/like url
+// 8. Handle /comments/:id/dislike url
+// 9. Handle /comments/:id/replies url
+// 10. Handle /comments/:id/replies/new url
+// 11. Handle /comments/:id/replies/:id url
+// 12. Handle /comments/:id/replies/:id/edit url
+// 13. Handle /comments/:id/replies/:id/delete url
+// 14. Handle /comments/:id/replies/:id/like url
+// 15. Handle /comments/:id/replies/:id/dislike url
 
-const express = require('express')
-const bodyParser = require('body-parser')
-const comments = require('./comments-data')
+// Import modules
+const express = require('express');
+const router = express.Router();
+const commentController = require('../controllers/commentController');
+const replyController = require('../controllers/replyController');
 
-const app = express()
+// 1. Handle root url
+router.get('/', (req, res) => {
+    res.redirect('/comments');
+});
 
-app.use(bodyParser.json())
+// 2. Handle /comments url
+router.get('/comments', commentController.getComments);
 
-app.get('/comments', (req, res) => {
-  res.json(comments)
-})
+// 3. Handle /comments/new url
+router.get('/comments/new', commentController.getNewComment);
+router.post('/comments/new', commentController.postNewComment);
 
-app.get('/comments/:id', (req, res) => {
-  const { id } = req.params
-  const comment = comments.find(comment => comment.id === Number(id))
-  if (!comment) {
-    res.status(404)
-    res.json({ message: `Comment with id ${id} not found` })
-  } else {
-    res.json(comment)
-  }
-})
+// 4. Handle /comments/:id url
+router.get('/comments/:id', commentController.getComment);
 
-app.post('/comments', (req, res) => {
-  const comment = req.body
-  comment.id = comments.length + 1
-  comments.push(comment)
-  res.status(201)
-  res.json(comment)
-})
+// 5. Handle /comments/:id/edit url
+router.get('/comments/:id/edit', commentController.getEditComment);
+router.post('/comments/:id/edit', commentController.postEditComment);
 
-app.put('/comments/:id', (req, res) => {
-  const { id } = req.params
-  const comment = comments.find(comment => comment.id === Number(id))
-  if (!comment) {
-    res.status(404)
-    res.json({ message: `Comment with id ${id} not found` })
-  } else {
-    Object.assign(comment, req.body)
-    res.json(comment)
-  }
-})
+// 6. Handle /comments/:id/delete url
+router.get('/comments/:id/delete', commentController.getDeleteComment);
 
-app.delete('/comments/:id', (req, res) => {
-  const { id } = req.params
-  const index = comments.findIndex(comment => comment.id === Number(id))
-  if (index === -1) {
-    res.status(404)
-    res.json({ message: `Comment with id ${id} not found` })
-  } else {
-    comments.splice(index, 1)
-    res.status(204)
-    res.send()
-  }
-})
+// 7. Handle /comments/:id/like url
+router.get('/comments/:id/like', commentController.getLikeComment);
 
-app.listen(3000, () => {
-  console.log('Server is listening on port 3000')
-})
+// 8. Handle /comments/:id/dislike url
+router.get('/comments/:id/dislike', commentController.getDislikeComment);
+
+// 9. Handle /comments/:id/replies url
+router.get('/comments/:id/replies', replyController.getReplies);
+
+// 10. Handle /comments/:id/replies/new url
