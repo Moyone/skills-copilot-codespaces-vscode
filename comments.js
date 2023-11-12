@@ -1,4 +1,4 @@
-// Create a web server
+// Create web server
 // 1. Handle root url
 // 2. Handle /comments url
 // 3. Handle /comments/new url
